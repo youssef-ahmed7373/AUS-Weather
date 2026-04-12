@@ -24,6 +24,7 @@ jobs:
           
       - name: Train model
         run: |
+          pip install pandas scikit-learn matplotlib
           python3 preprocess_dataset.py
           python3 train.py
 
