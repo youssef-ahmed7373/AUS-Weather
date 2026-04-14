@@ -17,4 +17,7 @@ stages:
     - utils_and_constants.py
     outs:
     - confusion_matrix.png
-    - metrics.json
+    
+    metrics:
+      - metrics.json:
+          cache: false
