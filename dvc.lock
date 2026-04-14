@@ -29,8 +29,8 @@ stages:
       size: 392
     - path: model.py
       hash: md5
-      md5: 14638e0724c5509c99fed61f48f99407
-      size: 916
+      md5: eae44898f54f80784eca2720bcce8d94
+      size: 926
     - path: processed_dataset/weather.csv
       hash: md5
       md5: 5a799ba072f8399633fbd5b922d7c499
@@ -46,9 +46,9 @@ stages:
     outs:
     - path: confusion_matrix.png
       hash: md5
-      md5: c23f8ff569c098c20a0b7afb8fba05c3
-      size: 15337
+      md5: 5c9810b71c03c368a4faebcea296990b
+      size: 15390
     - path: metrics.json
       hash: md5
-      md5: ec916b9800512aebcd3824504c316d48
-      size: 77
+      md5: 151740441a713a9a1fb2739b5a76e4af
+      size: 76

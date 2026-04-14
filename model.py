@@ -7,8 +7,8 @@ RFC_FOREST_DEPTH = 2
 
 def train_model(X_train, y_train):
     model = RandomForestClassifier(
-        max_depth=RFC_FOREST_DEPTH, n_estimators=5, random_state=1993
-    )
+        max_depth=RFC_FOREST_DEPTH, n_estimators=10, random_state=1997
+    ) # 5 1993
     model.fit(X_train, y_train)
     return model
 
