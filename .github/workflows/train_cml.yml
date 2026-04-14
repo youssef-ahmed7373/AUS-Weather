@@ -20,10 +20,11 @@ jobs:
 
       # Setup CML GitHub Action
       - name: Setup CML
-        uses: iterative/setup-cml@v1
+        uses: iterative/setup-cml@v2
           
       - name: Train model
         run: |
+          pip install pandas scikit-learn matplotlib
           python3 preprocess_dataset.py
           python3 train.py
 
