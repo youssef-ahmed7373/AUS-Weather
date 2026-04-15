@@ -102,7 +102,7 @@ jobs:
           REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           # Ensure we have the main branch available for comparison
-          git fetch --prune
+          git fetch origin train-model-setup:train-model-setup
           
           echo "## 📊 Rainfall Model Performance Report" > report.md
           echo "### Metrics Comparison (vs Main)" >> report.md
