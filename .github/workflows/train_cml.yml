@@ -103,7 +103,7 @@ jobs:
         run: |
           # Ensure we have the main branch available for comparison
           # git fetch origin train-model-setup:train-model-setup 
-          git fetch --prune 
+          git fetch --prune  
           
           echo "## 📊 Rainfall Model Performance Report" > report.md
           echo "### Metrics Comparison (vs Main)" >> report.md
