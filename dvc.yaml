@@ -29,7 +29,7 @@ stages:
           x_label: 'Predicted label'
           y_label: 'True label'
           title: Confusion matrix
-          cache: false
+          # cache: false
 
 
 
