@@ -1,8 +1,53 @@
-name: model-training
+# name: model-training
+
+# on:
+#   pull_request:
+#     branches: main
+
+# permissions: write-all
+
+# jobs:
+#   train_and_report_eval_performance:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Checkout 
+#         uses: actions/checkout@v3
+      
+#       - name: Setup Python
+#         uses: actions/setup-python@v4
+#         with:
+#           python-version: 3.9
+
+#       # Setup CML GitHub Action
+#       - name: Setup CML
+#         uses: iterative/setup-cml@v2
+          
+#       - name: Train model
+#         run: |
+#           pip install pandas scikit-learn matplotlib
+#           python3 preprocess_dataset.py
+#           python3 train.py
+
+#       - name: Write CML report
+#         env:
+#           REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#         run: |
+#           # Add metrics data to markdown
+#           cat metrics.json >> model_eval_report.md
+          
+#           # Add confusion matrix plot to markdown
+#           echo "![confusion matrix plot](./confusion_matrix.png)" >> model_eval_report.md
+
+#           # Create comment from markdown report
+#           cml comment create model_eval_report.md
+
+####################################################
+
+name: dvc-pipeline
 
 on:
   pull_request:
-    branches: main
+    branches: [train-model-setup]
 
 permissions: write-all
 
@@ -12,31 +57,70 @@ jobs:
     steps:
       - name: Checkout 
         uses: actions/checkout@v3
-      
+        with:
+          fetch-depth: 0 # Important for comparing branches
+
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
-          python-version: 3.9
+          python-version: '3.9'
 
-      # Setup CML GitHub Action
       - name: Setup CML
         uses: iterative/setup-cml@v2
           
-      - name: Train model
-        run: |
-          pip install pandas scikit-learn matplotlib
-          python3 preprocess_dataset.py
-          python3 train.py
+      - name: Setup DVC
+        uses: iterative/setup-dvc@v1
+      
+      # 1. Install GDrive support (The DVC action doesn't include it by default)
+      - name: Install GDrive support
+        run: pip install "dvc[gdrive]"
 
+      # 2. Configure and Pull data from Google Drive
+      - name: Pull data from GDrive
+        env:
+          GDRIVE_CREDENTIALS_DATA: ${{ secrets.GDRIVE_CREDENTIALS_DATA }}
+        run: |
+          # Use --local to keep these settings only in the GitHub Runner environment
+          dvc remote modify myremote --local gdrive_client_id ${{ secrets.GDRIVE_CLIENT_ID }}
+          dvc remote modify myremote --local gdrive_client_secret ${{ secrets.GDRIVE_CLIENT_SECRET }}
+          dvc pull
+
+      # 3. Run the training pipeline
+      - name: Run DVC pipeline
+        run: dvc repro
+
+      # 4. Generate CML Report
       - name: Write CML report
         env:
           REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          # Add metrics data to markdown
-          cat metrics.json >> model_eval_report.md
+          # Ensure we have the main branch available for comparison
+          git fetch --prune
           
-          # Add confusion matrix plot to markdown
-          echo "![confusion matrix plot](./confusion_matrix.png)" >> model_eval_report.md
+          echo "## 📊 Rainfall Model Performance Report" > report.md
+          echo "### Metrics Comparison (vs Main)" >> report.md
+          dvc metrics diff train-model-setup --md >> report.md
+          
+          echo "### Pipeline Status" >> report.md
+          echo "Model training completed successfully on GitHub Actions runner." >> report.md
+          
+          # This creates the actual comment on your Pull Request
+          cml comment create report.md
 
-          # Create comment from markdown report
-          cml comment create model_eval_report.md
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
