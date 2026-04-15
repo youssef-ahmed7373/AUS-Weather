@@ -7,7 +7,7 @@ RFC_FOREST_DEPTH = 2
 
 def train_model(X_train, y_train):
     model = RandomForestClassifier(
-        max_depth=RFC_FOREST_DEPTH, n_estimators=10, random_state=1997
+        max_depth=RFC_FOREST_DEPTH, n_estimators=5, random_state=1993
     ) # 5 1993
     model.fit(X_train, y_train)
     return model
@@ -15,6 +15,7 @@ def train_model(X_train, y_train):
 
 def evaluate_model(model, X_test, y_test, float_precision=4):
     y_pred = model.predict(X_test)
+    y_proba = model.predict_proba(X_test)
     accuracy = accuracy_score(y_test, y_pred)
     precision = precision_score(y_test, y_pred)
     recall = recall_score(y_test, y_pred)
@@ -25,7 +26,8 @@ def evaluate_model(model, X_test, y_test, float_precision=4):
         "recall": recall,
         "f1_score": f1,
     }
-
-    return json.loads(
+    metrics = json.loads(
         json.dumps(metrics), parse_float=lambda x: round(float(x), float_precision)
     )
+
+    return metrics, y_pred, y_proba
