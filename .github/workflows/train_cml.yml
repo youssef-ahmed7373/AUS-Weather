@@ -86,6 +86,11 @@ jobs:
           dvc remote modify myremote --local gdrive_client_id ${{ secrets.GDRIVE_CLIENT_ID }}
           dvc remote modify myremote --local gdrive_client_secret ${{ secrets.GDRIVE_CLIENT_SECRET }}
           dvc pull
+      - name: install Needed Libraries for training model
+        run: |
+          pip install pandas scikit-learn matplotlib
+#           python3 preprocess_dataset.py
+#           python3 train.py
 
       # 3. Run the training pipeline
       - name: Run DVC pipeline
